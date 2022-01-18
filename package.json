@@ -1,0 +1,26 @@
+{
+  "name": "near-rust-riddles",
+  "version": "1.0.0",
+  "description": "Compiles NEAR Protocol example of a riddles board with rewards",
+  "scripts": {
+    "build": "cargo build --target wasm32-unknown-unknown --release",
+    "deploy:dev": "npm run build && near dev-deploy res/near_rust_riddles.wasm",
+    "postbuild": "cp target/wasm32-unknown-unknown/release/near_rust_riddles.wasm ./res/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petarvujovic98/near-rust-riddles.git"
+  },
+  "keywords": [
+    "near-protocol",
+    "blockchain",
+    "rust",
+    "smart-contract"
+  ],
+  "author": "Petar Vujović <petarvujovic98@gmail.com",
+  "license": "(MIT AND Apache-2.0)",
+  "bugs": {
+    "url": "https://github.com/petarvujovic98/near-rust-riddles/issues"
+  },
+  "homepage": "https://github.com/petarvujovic98/near-rust-riddles#readme"
+}
