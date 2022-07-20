@@ -63,7 +63,7 @@ impl Board {
     #[payable]
     pub fn get_riddle_hint(&mut self, title: String) -> String {
         if env::attached_deposit() == 0 {
-            env::panic(b"You need to pay to see hints for riddles");
+            env::panic_str("You need to pay to see hints for riddles");
         }
 
         let mut riddle = self.riddles.get(&title).expect("Riddle not found");
@@ -78,11 +78,11 @@ impl Board {
     pub fn create_riddle(&mut self, title: String, text: String, hint: String, answer: String) {
         let bounty = env::attached_deposit();
         if bounty == 0 {
-            env::panic(b"Bounty must be greater than 0");
+            env::panic_str("Bounty must be greater than 0");
         }
 
         match self.riddles.get(&title) {
-            Some(_) => env::panic(b"Riddle already exists"),
+            Some(_) => env::panic_str("Riddle already exists"),
             None => {
                 let riddle = Riddle::new(title.clone(), text, hint, answer, bounty);
                 self.riddles.insert(&title, &riddle);
@@ -93,12 +93,12 @@ impl Board {
     #[payable]
     pub fn solve_riddle(&mut self, title: String, answer: String) {
         if env::attached_deposit() == 0 {
-            env::panic(b"You need to pay to submit an answer to riddles");
+            env::panic_str("You need to pay to submit an answer to riddles");
         }
 
         let mut riddle = self.riddles.get(&title).expect("Riddle not found");
         if riddle.is_solved() {
-            env::panic(b"Riddle already solved");
+            env::panic_str("Riddle already solved");
         }
 
         match riddle.check_answer(answer) {
@@ -114,7 +114,7 @@ impl Board {
             }
             false => {
                 riddle.increase_bounty(env::attached_deposit());
-                env::panic(b"Wrong answer");
+                env::panic_str("Wrong answer");
             }
         }
     }
@@ -124,12 +124,11 @@ impl Board {
 mod tests {
     use super::*;
     use near_sdk::test_utils::VMContextBuilder;
-    use near_sdk::{testing_env, MockedBlockchain, VMContext};
-    use std::convert::TryInto;
+    use near_sdk::{testing_env, AccountId, VMContext};
 
     fn get_context(is_view: bool, attached_deposit: u128) -> VMContext {
         VMContextBuilder::new()
-            .signer_account_id("bob_near".try_into().unwrap())
+            .signer_account_id(AccountId::new_unchecked("bob_near".to_string()))
             .is_view(is_view)
             .attached_deposit(attached_deposit)
             .account_balance(1000)
