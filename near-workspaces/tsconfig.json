@@ -1,4 +1,0 @@
-{
-  "extends": "near-workspaces-ava/tsconfig.ava.json",
-  "include": ["**/*.ts"]
-}
